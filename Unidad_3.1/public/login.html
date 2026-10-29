@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso al Sistema - Login Obligatorio</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="auth-wrapper">
+  <main class="card card-auth">
+    <h2 class="title-cyan" style="text-align: center;">Autenticación Requerida</h2>
+    <div id="errorBox" class="alert alert-error"></div>
+    <form id="loginForm">
+      <label for="username">Usuario</label>
+      <input type="text" id="username" required autocomplete="username" placeholder="admin, ceo, pm_gerente...">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" required autocomplete="current-password" placeholder="Password123!">
+      <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">Ingresar al Sistema</button>
+    </form>
+    <div class="hint-box">
+      <strong>Reglas de Seguridad:</strong><br>
+      • 3 intentos fallidos = 15 min bloqueo.<br>
+      • Restricción horaria activa por rol.<br>
+      • Clave genérica: <code>Password123!</code>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorBox = document.getElementById('errorBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          window.location.href = '/dashboard';
+        } else {
+          errorBox.textContent = data.error || 'Error al autenticar.';
+          errorBox.style.display = 'block';
+        }
+      } catch (err) {
+        errorBox.textContent = 'Error de conexion con el servidor.';
+        errorBox.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

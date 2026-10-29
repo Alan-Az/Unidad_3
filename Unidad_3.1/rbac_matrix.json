@@ -1,0 +1,33 @@
+{
+  "roles": [
+    "administrador",
+    "ceo",
+    "coo",
+    "pm_gerente",
+    "tech_lead",
+    "esp_operativo",
+    "esp_soporte",
+    "rh_talento",
+    "ti_secops",
+    "legal_compliance"
+  ],
+  "modules": [
+    { "id": "configuracion_roles", "name": "Configuracion de Roles y Permisos", "description": "Gestion de la matriz RBAC" },
+    { "id": "estrategia_kpi", "name": "Estrategia y Direccion", "description": "Metricas C-Level y EBITDA" },
+    { "id": "proyectos", "name": "Gestion de Proyectos", "description": "Seguimiento tactico y entregables" },
+    { "id": "desarrollo_operaciones", "name": "Operaciones y Desarrollo", "description": "Ejecucion y tickets diarios" },
+    { "id": "auditoria_logs", "name": "Auditoria y Bitacoras", "description": "Monitoreo de seguridad y accesos" }
+  ],
+  "permissions": {
+    "administrador": { "all_modules": "admin" },
+    "ceo": { "configuracion_roles": "none", "estrategia_kpi": "write", "proyectos": "read", "desarrollo_operaciones": "read", "auditoria_logs": "read" },
+    "coo": { "configuracion_roles": "none", "estrategia_kpi": "read", "proyectos": "write", "desarrollo_operaciones": "write", "auditoria_logs": "read" },
+    "pm_gerente": { "configuracion_roles": "none", "estrategia_kpi": "none", "proyectos": "write", "desarrollo_operaciones": "read", "auditoria_logs": "none" },
+    "tech_lead": { "configuracion_roles": "none", "estrategia_kpi": "none", "proyectos": "read", "desarrollo_operaciones": "write", "auditoria_logs": "read" },
+    "esp_operativo": { "configuracion_roles": "none", "estrategia_kpi": "none", "proyectos": "none", "desarrollo_operaciones": "write", "auditoria_logs": "none" },
+    "esp_soporte": { "configuracion_roles": "none", "estrategia_kpi": "none", "proyectos": "none", "desarrollo_operaciones": "write", "auditoria_logs": "none" },
+    "rh_talento": { "configuracion_roles": "none", "estrategia_kpi": "none", "proyectos": "read", "desarrollo_operaciones": "none", "auditoria_logs": "none" },
+    "ti_secops": { "configuracion_roles": "read", "estrategia_kpi": "none", "proyectos": "none", "desarrollo_operaciones": "write", "auditoria_logs": "write" },
+    "legal_compliance": { "configuracion_roles": "none", "estrategia_kpi": "read", "proyectos": "none", "desarrollo_operaciones": "none", "auditoria_logs": "read" }
+  }
+}
