@@ -1,9 +1,51 @@
-# Environment & secrets
-.env
-.env.local
-*.env
-!.env.example
+# =============================================================================
+# .gitignore centralizado - Unidad 3 (Sistemas Operativos)
+# Cubre todas las tareas (Tarea_3.1, Tarea_3.2, Tarea_3.3) y la raiz del repo
+# =============================================================================
 
-# Node dependencies
-node_modules/
+# --- Secretos y variables de entorno ---
+**/.env
+**/.env.local
+**/.env.*.local
+**/*.env
+!**/.env.example
+!**/.env.*.example
 
+# --- Archivos de respaldo locales y temporales generados por pruebas ---
+**/*.tar.gz
+**/*.tgz
+**/*.zip
+**/*.bak
+**/*.tmp
+**/*.swp
+*~
+*.lock
+
+# --- Bitacoras y registros de ejecucion local ---
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Dependencias de Node (si se ejecutan utilerias auxiliares) ---
+**/node_modules/
+
+# --- Artefactos del sistema operativo ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# --- Configuraciones locales de editores e IDEs ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
