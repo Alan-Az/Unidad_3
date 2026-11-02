@@ -26,7 +26,7 @@ validar_entorno() {
     fi
 
     if [[ $# -ne 1 ]]; then
-        echo "[ERROR] Uso incorrecto." >&2
+        echo "[ERROR] Parámetro faltante." >&2
         echo "Uso: $0 <ruta_archivo.csv>" >&2
         exit 1
     fi
@@ -59,15 +59,32 @@ crear_usuario() {
 
     asegurar_grupo "$prim_group"
 
-    IFS=',' read -ra arr_sec <<< "$sec_groups"
-    for g in "${arr_sec[@]}"; do
-        [[ -n "$g" ]] && asegurar_grupo "$g"
+    # Procesar grupos secundarios separados por coma
+    local clean_sec_groups=""
+    local IFS_ORIG="$IFS"
+    IFS=','
+    for g in $sec_groups; do
+        g=$(echo "$g" | xargs)
+        if [[ -n "$g" ]]; then
+            asegurar_grupo "$g"
+            if [[ -z "$clean_sec_groups" ]]; then
+                clean_sec_groups="$g"
+            else
+                clean_sec_groups="$clean_sec_groups,$g"
+            fi
+        fi
     done
+    IFS="$IFS_ORIG"
 
-    useradd -m -s /bin/bash -g "$prim_group" -G "$sec_groups" -c "$nombre" "$user"
+    if [[ -n "$clean_sec_groups" ]]; then
+        useradd -m -s /bin/bash -g "$prim_group" -G "$clean_sec_groups" -c "$nombre" "$user"
+    else
+        useradd -m -s /bin/bash -g "$prim_group" -c "$nombre" "$user"
+    fi
 
+    # Generar contraseña temporal segura
     local temp_pass
-    temp_pass=$(openssl rand -base64 12)
+    temp_pass="Temp.$(openssl rand -hex 4)A1!"
     echo "$user:$temp_pass" | chpasswd
 
     # Forzar cambio de contraseña en el primer inicio de sesión
@@ -99,19 +116,16 @@ main() {
 
     log "INFO" "=== Iniciando aprovisionamiento masivo desde: $csv_file ==="
 
-    local num_linea=0
     while IFS=',' read -r user nombre prim_group sec_groups dias_exp || [[ -n "$user" ]]; do
-        ((num_linea++))
-        # Omitir cabecera y líneas vacías o comentadas
-        [[ $num_linea -eq 1 && "$user" == "usuario" ]] && continue
-        [[ -z "$user" || "$user" =~ ^[[:space:]]*# ]] && continue
-
         # Limpiar posibles retornos de carro de Windows (\r) y espacios
         user=$(echo "$user" | tr -d '\r' | xargs)
         nombre=$(echo "$nombre" | tr -d '\r' | xargs)
         prim_group=$(echo "$prim_group" | tr -d '\r' | xargs)
         sec_groups=$(echo "$sec_groups" | tr -d '\r' | xargs)
         dias_exp=$(echo "$dias_exp" | tr -d '\r' | xargs)
+
+        # Omitir cabecera, líneas vacías o comentadas
+        [[ "$user" == "usuario" || -z "$user" || "$user" =~ ^[[:space:]]*# ]] && continue
 
         crear_usuario "$user" "$nombre" "$prim_group" "$sec_groups" "$dias_exp"
     done < "$csv_file"
@@ -120,4 +134,3 @@ main() {
 }
 
 main "$@"
-

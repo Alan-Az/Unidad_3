@@ -71,13 +71,9 @@ main() {
 
     if [[ -f "$target" ]]; then
         log "INFO" "=== Procesando bajas por lote desde archivo: $target ==="
-        local num_linea=0
         while IFS=',' read -r user _resto || [[ -n "$user" ]]; do
-            ((num_linea++))
-            [[ $num_linea -eq 1 && "$user" == "usuario" ]] && continue
-            [[ -z "$user" || "$user" =~ ^[[:space:]]*# ]] && continue
-
             user=$(echo "$user" | tr -d '\r' | xargs)
+            [[ "$user" == "usuario" || -z "$user" || "$user" =~ ^[[:space:]]*# ]] && continue
             eliminar_usuario "$user"
         done < "$target"
     else
@@ -89,4 +85,3 @@ main() {
 }
 
 main "$@"
-
