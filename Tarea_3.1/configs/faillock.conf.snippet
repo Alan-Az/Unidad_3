@@ -1,0 +1,20 @@
+# ==============================================================================
+# Política de Bloqueo PAM (pam_faillock): Tarea 3.1
+# Ubicación destino: /etc/security/faillock.conf
+# ==============================================================================
+
+# Bloquear cuenta tras 3 intentos consecutivos fallidos
+deny = 3
+
+# Ventana de tiempo (en segundos) en la que se acumulan los 3 fallos (15 min)
+fail_interval = 900
+
+# Tiempo de bloqueo (en segundos) antes del desbloqueo automático (5 min)
+unlock_time = 300
+
+# Mantener registro de auditoría en syslog
+audit
+
+# NO bloquear a root para evitar lockout permanente de la máquina virtual
+# even_deny_root = false
+
