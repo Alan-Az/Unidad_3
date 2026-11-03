@@ -2,7 +2,7 @@
 # ==============================================================================
 # Script: bajas.sh
 # Descripción: Revocación segura de usuarios, terminación de procesos,
-#              respaldo de directorio home y eliminación de cuenta.
+#              respaldo de directorio home, eliminación de cuenta y limpieza.
 # Entorno: Linux (Ubuntu/Debian)
 # ==============================================================================
 
@@ -11,6 +11,7 @@ IFS=$'\n\t'
 
 readonly LOG_FILE="/var/log/bajas_usuarios.log"
 readonly BACKUP_DIR="/var/backups/homes"
+readonly CREDENTIALS_FILE="/root/credenciales_temporales.txt"
 
 log() {
     local nivel="$1"
@@ -56,9 +57,14 @@ eliminar_usuario() {
         log "INFO" "Directorio /home/$user respaldado en: $backup_file"
     fi
 
-    # 4. Eliminar cuenta y home original
-    userdel -r "$user"
+    # 4. Eliminar cuenta y home (filtrando el aviso cosmético de mail spool)
+    userdel -r "$user" 2>&1 | grep -v "mail spool.*not found" || true
     log "INFO" "Usuario '$user' eliminado del sistema."
+
+    # 5. Limpiar registro del archivo de credenciales temporales
+    if [[ -f "$CREDENTIALS_FILE" ]]; then
+        sed -i "/Usuario: $user /d" "$CREDENTIALS_FILE" 2>/dev/null || true
+    fi
 }
 
 main() {
