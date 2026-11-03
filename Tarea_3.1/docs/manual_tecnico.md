@@ -4,7 +4,7 @@
 **Unidad**: Unidad 3 - Administración de Usuarios, Procesos y Seguridad  
 **Actividad**: Tarea 3.1  
 **Repositorio GitHub**: `https://github.com/Alan-Az/Unidad_3/tree/main/Tarea_3.1`  
-**Enlace Video YouTube**: `[PEGAR_AQUI_ENLACE_DE_YOUTUBE]`  
+**Enlace Video YouTube**:  
 
 ---
 
@@ -21,46 +21,65 @@ La solución cuenta con soporte para **Linux (Ubuntu/Debian vía Bash)** y **Win
 ### 2.1 Diagrama Jerárquico de Grupos y Roles
 
 ```mermaid
-graph TD
-    subgraph Dominio["Ecosistema Organizacional (Sistemas / Host)"]
-        RootAdmin["Superadministrador / Root"]
-        
-        subgraph DeptSistemas["Departamento de Sistemas"]
-            GrpSistemas["Grupo: sistemas"]
-            GrpAdmin["Grupo Secundario: admin"]
-            UserSistemas["Usuario: mlopez (Maria Lopez)"]
-            GrpSistemas --> UserSistemas
-            GrpAdmin --> UserSistemas
-        end
-        
-        subgraph DeptFinanzas["Departamento de Finanzas"]
-            GrpFinanzas["Grupo: finanzas"]
-            GrpConta["Grupo Secundario: contabilidad"]
-            GrpAud["Grupo Secundario: auditoria"]
-            UserFin1["Usuario: jperez (Juan Perez)"]
-            UserFin2["Usuario: anavarro (Ana Navarro)"]
-            GrpFinanzas --> UserFin1
-            GrpConta --> UserFin1
-            GrpFinanzas --> UserFin2
-            GrpAud --> UserFin2
-        end
+flowchart TD
+    RootAdmin["Superadministrador / Root"]
 
-        subgraph DeptOperaciones["Departamento de Operaciones"]
-            GrpOps["Grupo: operaciones"]
-            GrpLog["Grupo Secundario: logistica"]
-            GrpMant["Grupo Secundario: mantenimiento"]
-            UserOps1["Usuario: cgarcia (Carlos Garcia)"]
-            UserOps2["Usuario: rvega (Roberto Vega)"]
-            GrpOps --> UserOps1
-            GrpLog --> UserOps1
-            GrpOps --> UserOps2
-            GrpMant --> UserOps2
-        end
-
-        RootAdmin --> GrpSistemas
-        RootAdmin --> GrpFinanzas
-        RootAdmin --> GrpOps
+    subgraph DeptSistemas ["Departamento de Sistemas"]
+        GrpSistemas["Grupo: sistemas"]
+        GrpAdmin["Grupo Secundario: admin"]
+        UserSistemas["Usuario: mlopez"]
+        GrpSistemas --> UserSistemas
+        GrpAdmin --> UserSistemas
     end
+
+    subgraph DeptFinanzas ["Departamento de Finanzas"]
+        GrpFinanzas["Grupo: finanzas"]
+        GrpConta["Grupo Secundario: contabilidad"]
+        GrpAud["Grupo Secundario: auditoria"]
+        UserFin1["Usuario: jperez"]
+        UserFin2["Usuario: anavarro"]
+        GrpFinanzas --> UserFin1
+        GrpConta --> UserFin1
+        GrpFinanzas --> UserFin2
+        GrpAud --> UserFin2
+    end
+
+    subgraph DeptOperaciones ["Departamento de Operaciones"]
+        GrpOps["Grupo: operaciones"]
+        GrpLog["Grupo Secundario: logistica"]
+        GrpMant["Grupo Secundario: mantenimiento"]
+        UserOps1["Usuario: cgarcia"]
+        UserOps2["Usuario: rvega"]
+        GrpOps --> UserOps1
+        GrpLog --> UserOps1
+        GrpOps --> UserOps2
+        GrpMant --> UserOps2
+    end
+
+    RootAdmin --> GrpSistemas
+    RootAdmin --> GrpFinanzas
+    RootAdmin --> GrpOps
+```
+
+#### Representación Esquemática en Texto (Garantizada para exportación a PDF)
+
+```text
+[Superadministrador / Root]
+ ├── [sistemas] (Sudoers Total: ALL)
+ │    └── admin
+ │         └── mlopez (Maria Lopez)
+ │
+ ├── [finanzas] (Sin privilegios Sudo)
+ │    ├── contabilidad
+ │    │    └── jperez (Juan Perez)
+ │    └── auditoria
+ │         └── anavarro (Ana Navarro)
+ │
+ └── [operaciones] (Sudoers Restringido: systemctl status, journalctl)
+      ├── logistica
+      │    └── cgarcia (Carlos Garcia)
+      └── mantenimiento
+           └── rvega (Roberto Vega)
 ```
 
 ---
@@ -393,3 +412,4 @@ Comando ejecutado: `sudo ./bajas.sh rvega`
 1. **Mínimo Privilegio**: La segregación estricta de sudoers y permisos `0700` en los directorios personales impide la escalada lateral de privilegios y garantiza la privacidad interdepartamental.
 2. **Defensa en Profundidad**: La combinación de políticas temporales (`pam_time`), protección contra fuerza bruta (`pam_faillock`) y contraseñas temporales forzadas asegura el ciclo de vida de las cuentas desde su creación hasta su baja definitiva.
 3. **Mantenibilidad y Robustez**: La arquitectura Clean Code de los scripts con manejo de excepciones `set -euo pipefail` y respaldos automáticos previo al borrado minimiza el riesgo operativo y previene estados corruptos en el sistema.
+
