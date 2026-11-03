@@ -365,7 +365,7 @@ Comando ejecutado: `su - cgarcia`
 Comando ejecutado: Iniciar con usuario `jperez` (Finanzas) e intentar acceder a `/home/cgarcia` (Operaciones).  
 *Descripción*: Comprueba que los permisos `0700` impiden el acceso cruzado entre cuentas departamentales (`Permission denied`).
 
-![alt text](Home.png)
+![alt text](permisos.png)
 
 ---
 
@@ -375,19 +375,18 @@ Comando ejecutado:
 * Con `jperez` (Finanzas): `sudo whoami` -> Retorna rechazo por no estar en sudoers.
 * Con `cgarcia` (Operaciones): `sudo systemctl status ssh` -> Permitido.
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: Pruebas de elevación de privilegios en Sistemas vs Finanzas]
-```
+![alt text](PermisosW1.png)
+![alt text](PermisosW2.png)
+![alt text](PermisosW3.png)
 
 ---
 
 ### 5.5 Evidencia 5: Bloqueo de Cuenta por 3 Intentos Fallidos (`faillock`)
-Comando ejecutado: Ingresar 3 contraseñas erróneas con `jperez` y verificar estado con `sudo faillock --user jperez`.  
+Comando ejecutado: Ingresar 3 contraseñas erróneas con `jperez`.  
 *Descripción*: Demuestra la protección por fuerza bruta bloqueando la cuenta durante 5 minutos.
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: Salida del comando faillock mostrando los 3 intentos fallidos registrados]
-```
+![alt text](Bloqueo1.png)
+![alt text](Bloqueo2.png)
 
 ---
 
@@ -395,9 +394,7 @@ Comando ejecutado: Ingresar 3 contraseñas erróneas con `jperez` y verificar es
 Comando ejecutado: `sudo ./bajas.sh rvega`  
 *Descripción*: Muestra la terminación de procesos, el archivo comprimido `.tar.gz` generado en `/var/backups/homes/` y la eliminación de la cuenta.
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: Ejecución de bajas.sh y listado ls -lh /var/backups/homes/]
-```
+![alt text](Bajas.png)
 
 ---
 
