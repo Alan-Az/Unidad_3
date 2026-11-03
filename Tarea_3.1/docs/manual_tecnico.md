@@ -365,9 +365,7 @@ Comando ejecutado: `su - cgarcia`
 Comando ejecutado: Iniciar con usuario `jperez` (Finanzas) e intentar acceder a `/home/cgarcia` (Operaciones).  
 *Descripción*: Comprueba que los permisos `0700` impiden el acceso cruzado entre cuentas departamentales (`Permission denied`).
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: jperez@ubuntu:~$ cd /home/cgarcia -> Permission denied]
-```
+![alt text](Home.png)
 
 ---
 
