@@ -62,9 +62,33 @@ if [[ -f "$FAILLOCK_SRC" ]]; then
     echo "[OK] Archivo $FAILLOCK_DEST actualizado."
 fi
 
-# Asegurar pam_faillock en Ubuntu mediante pam-auth-update si está disponible
+# En Ubuntu/Debian, pam-auth-update requiere perfiles en /usr/share/pam-configs/
+# para inyectar pam_faillock.so en /etc/pam.d/common-auth y common-account
 if command -v pam-auth-update >/dev/null 2>&1; then
-    pam-auth-update --enable faillock 2>/dev/null || true
+    cat <<'EOF' > /usr/share/pam-configs/faillock_notify
+Name: Notificacion de intentos fallidos pam_faillock
+Default: yes
+Priority: 1024
+Auth-Type: Primary
+Auth:
+	requisite pam_faillock.so preauth
+Account-Type: Primary
+Account:
+	required pam_faillock.so
+EOF
+
+    cat <<'EOF' > /usr/share/pam-configs/faillock
+Name: Bloqueo de acceso por intentos pam_faillock
+Default: yes
+Priority: 0
+Auth-Type: Primary
+Auth:
+	[default=die] pam_faillock.so authfail
+	sufficient pam_faillock.so authsucc
+EOF
+
+    pam-auth-update --package
+    echo "[OK] Modulo pam_faillock integrado y activado en la pila PAM del sistema."
 fi
 
 echo "=== Configuración de directivas de seguridad finalizada con éxito ==="
