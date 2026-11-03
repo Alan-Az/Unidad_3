@@ -3,8 +3,8 @@
 **Materia**: Sistemas Operativos  
 **Unidad**: Unidad 3 - Administración de Usuarios, Procesos y Seguridad  
 **Actividad**: Tarea 3.1  
-**Repositorio GitHub**: `https://github.com/Alan-Az/Unidad_3/tree/main/Tarea_3.1`  
-**Enlace Video YouTube**:  
+**Repositorio GitHub**: https://github.com/Alan-Az/Unidad_3  
+**Enlace Video YouTube**:  https://youtu.be/tjdtmJ8jSH0
 
 ---
 
@@ -22,43 +22,37 @@ La solución cuenta con soporte para **Linux (Ubuntu/Debian vía Bash)** y **Win
 
 ```mermaid
 flowchart TD
-    RootAdmin["Superadministrador / Root"]
+    Root["Superadministrador (root)"]
 
-    subgraph DeptSistemas ["Departamento de Sistemas"]
-        GrpSistemas["Grupo: sistemas"]
-        GrpAdmin["Grupo Secundario: admin"]
-        UserSistemas["Usuario: mlopez"]
-        GrpSistemas --> UserSistemas
-        GrpAdmin --> UserSistemas
-    end
+    %% Departamentos / Grupos Principales
+    Root --> DeptSist["sistemas (Admin Total)"]
+    Root --> DeptFin["finanzas (Sin sudo)"]
+    Root --> DeptOps["operaciones (Monitoreo)"]
 
-    subgraph DeptFinanzas ["Departamento de Finanzas"]
-        GrpFinanzas["Grupo: finanzas"]
-        GrpConta["Grupo Secundario: contabilidad"]
-        GrpAud["Grupo Secundario: auditoria"]
-        UserFin1["Usuario: jperez"]
-        UserFin2["Usuario: anavarro"]
-        GrpFinanzas --> UserFin1
-        GrpConta --> UserFin1
-        GrpFinanzas --> UserFin2
-        GrpAud --> UserFin2
-    end
+    %% Grupos Secundarios
+    DeptSist --> GrpAdmin["admin"]
+    DeptFin --> GrpConta["contabilidad"]
+    DeptFin --> GrpAudit["auditoria"]
+    DeptOps --> GrpLog["logistica"]
+    DeptOps --> GrpMant["mantenimiento"]
 
-    subgraph DeptOperaciones ["Departamento de Operaciones"]
-        GrpOps["Grupo: operaciones"]
-        GrpLog["Grupo Secundario: logistica"]
-        GrpMant["Grupo Secundario: mantenimiento"]
-        UserOps1["Usuario: cgarcia"]
-        UserOps2["Usuario: rvega"]
-        GrpOps --> UserOps1
-        GrpLog --> UserOps1
-        GrpOps --> UserOps2
-        GrpMant --> UserOps2
-    end
+    %% Usuarios Asignados
+    GrpAdmin --> UsrMlopez["mlopez (Maria Lopez)"]
+    GrpConta --> UsrJperez["jperez (Juan Perez)"]
+    GrpAudit --> UsrAnavarro["anavarro (Ana Navarro)"]
+    GrpLog --> UsrCgarcia["cgarcia (Carlos Garcia)"]
+    GrpMant --> UsrRvega["rvega (Roberto Vega)"]
 
-    RootAdmin --> GrpSistemas
-    RootAdmin --> GrpFinanzas
-    RootAdmin --> GrpOps
+    %% Estilos de Nodos
+    style Root fill:#ffcdd2,stroke:#b71c1c,stroke-width:2px
+    style DeptSist fill:#ffe0b2,stroke:#e65100,stroke-width:2px
+    style DeptFin fill:#e1bee7,stroke:#4a148c,stroke-width:1px
+    style DeptOps fill:#c8e6c9,stroke:#1b5e20,stroke-width:1px
+    style UsrMlopez fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style UsrJperez fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style UsrAnavarro fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style UsrCgarcia fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
+    style UsrRvega fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
 ```
 
 #### Representación Esquemática en Texto (Garantizada para exportación a PDF)
@@ -343,16 +337,11 @@ main "$@"
 ---
 
 ## 5. Evidencias de Validación Técnica
-
-> *Nota para el alumno: Inserta las capturas de pantalla de la terminal de tu máquina virtual en los recuadros indicados abajo antes de generar el PDF definitivo.*
-
 ### 5.1 Evidencia 1: Ejecución del Script de Altas por Lote
 Comando ejecutado: `sudo ./altas.sh ../usuarios.csv`  
 *Descripción*: Demuestra la creación exitosa de las cuentas departamentales y la generación de contraseñas temporales en `/root/credenciales_temporales.txt`.
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: Salida en consola de altas.sh y cat de credenciales_temporales.txt]
-```
+![alt text](altas.png)
 
 ---
 
@@ -360,9 +349,7 @@ Comando ejecutado: `sudo ./altas.sh ../usuarios.csv`
 Comando ejecutado: `su - cgarcia`  
 *Descripción*: Comprueba que el sistema intercepta el login y fuerza el cambio de la clave temporal antes de abrir la shell.
 
-```text
-[INSERTAR AQUÍ CAPTURA DE PANTALLA: Mensaje "You are required to change your password immediately"]
-```
+![alt text](ContraseñaCambio.png)
 
 ---
 
