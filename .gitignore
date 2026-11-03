@@ -53,3 +53,5 @@ $RECYCLE.BIN/
 # --- Agentes y herramientas de IA locales ---
 .agents/
 **/.agents/
+skills-lock.json
+
