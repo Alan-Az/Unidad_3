@@ -129,4 +129,3 @@
 ### 8. Despedida (6:30 - 7:00)
 * **Qué decir**:
   > *"Con estas pruebas queda validado el funcionamiento de la automatización de altas, bajas, aislamiento de directorios y políticas de seguridad para la Tarea 3.1. Gracias."*
-

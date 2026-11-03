@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 540" width="100%" height="100%">
+  <defs>
+    <style>
+      .title-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: bold; font-size: 15px; fill: #ffffff; text-anchor: middle; }
+      .dept-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: bold; font-size: 14px; text-anchor: middle; }
+      .dept-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; fill: #555555; text-anchor: middle; }
+      .group-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 600; font-size: 12px; fill: #333333; text-anchor: middle; }
+      .user-name { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: bold; font-size: 12px; fill: #0d47a1; text-anchor: middle; }
+      .user-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; fill: #555555; text-anchor: middle; }
+      .badge-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: bold; font-size: 11px; fill: #333333; }
+      .badge-desc { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10.5px; fill: #444444; }
+      .line { stroke: #888888; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#666666" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Fondo suave -->
+  <rect width="920" height="540" fill="#fcfcfc" rx="8"/>
+
+  <!-- NIVEL 0: Superadministrador (root) -->
+  <rect x="340" y="15" width="240" height="42" rx="6" fill="#c62828" filter="url(#shadow)"/>
+  <text x="460" y="41" class="title-text">Superadministrador (root)</text>
+
+  <!-- Lineas desde Root a Departamentos -->
+  <path d="M 460 57 L 460 85 L 160 85 L 160 110" class="line" marker-end="url(#arrow)"/>
+  <path d="M 460 57 L 460 110" class="line" marker-end="url(#arrow)"/>
+  <path d="M 460 57 L 460 85 L 755 85 L 755 110" class="line" marker-end="url(#arrow)"/>
+
+  <!-- ==================== COLUMNA 1: SISTEMAS ==================== -->
+  <rect x="40" y="110" width="240" height="56" rx="6" fill="#fff3e0" stroke="#f57c00" stroke-width="1.8" filter="url(#shadow)"/>
+  <text x="160" y="133" class="dept-title" fill="#e65100">sistemas</text>
+  <text x="160" y="152" class="dept-sub">Grupo Primario | Admin Total</text>
+
+  <!-- Linea Depto -> Grupo -->
+  <line x1="160" y1="166" x2="160" y2="200" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Grupo Secundario: admin -->
+  <rect x="70" y="200" width="180" height="36" rx="5" fill="#ffffff" stroke="#f57c00" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#shadow)"/>
+  <text x="160" y="223" class="group-text">Secundario: admin</text>
+
+  <!-- Linea Grupo -> Usuario -->
+  <line x1="160" y1="236" x2="160" y2="270" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Usuario: mlopez -->
+  <rect x="55" y="270" width="210" height="52" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="160" y="291" class="user-name">mlopez</text>
+  <text x="160" y="309" class="user-sub">Maria Lopez</text>
+
+  <!-- Badge Politica Sistemas -->
+  <rect x="40" y="350" width="240" height="155" rx="6" fill="#ffffff" stroke="#e0e0e0" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="40" y="350" width="240" height="26" rx="6" fill="#fff3e0"/>
+  <text x="160" y="367" class="dept-title" fill="#e65100" font-size="12px">Políticas: Sistemas</text>
+  <text x="55" y="395" class="badge-title">• Horario:</text>
+  <text x="110" y="395" class="badge-desc">24/7 (Sin restricción)</text>
+  <text x="55" y="420" class="badge-title">• Sudoers:</text>
+  <text x="110" y="420" class="badge-desc">ALL=(ALL:ALL) ALL</text>
+  <text x="55" y="445" class="badge-title">• Home:</text>
+  <text x="110" y="445" class="badge-desc">0700 (/home/mlopez)</text>
+  <text x="55" y="470" class="badge-title">• Expiración:</text>
+  <text x="125" y="470" class="badge-desc">90 días</text>
+  <text x="55" y="493" class="badge-title">• Password:</text>
+  <text x="125" y="493" class="badge-desc">Expirada en 1er login</text>
+
+  <!-- ==================== COLUMNA 2: FINANZAS ==================== -->
+  <rect x="335" y="110" width="250" height="56" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.8" filter="url(#shadow)"/>
+  <text x="460" y="133" class="dept-title" fill="#4a148c">finanzas</text>
+  <text x="460" y="152" class="dept-sub">Grupo Primario | Sin Sudo</text>
+
+  <!-- Lineas Depto -> Grupos -->
+  <path d="M 460 166 L 460 183 L 395 183 L 395 200" class="line" marker-end="url(#arrow)"/>
+  <path d="M 460 166 L 460 183 L 525 183 L 525 200" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Grupos Secundarios: contabilidad y auditoria -->
+  <rect x="335" y="200" width="120" height="36" rx="5" fill="#ffffff" stroke="#7b1fa2" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#shadow)"/>
+  <text x="395" y="223" class="group-text">contabilidad</text>
+
+  <rect x="465" y="200" width="120" height="36" rx="5" fill="#ffffff" stroke="#7b1fa2" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#shadow)"/>
+  <text x="525" y="223" class="group-text">auditoria</text>
+
+  <!-- Lineas Grupos -> Usuarios -->
+  <line x1="395" y1="236" x2="395" y2="270" class="line" marker-end="url(#arrow)"/>
+  <line x1="525" y1="236" x2="525" y2="270" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Usuarios: jperez y anavarro -->
+  <rect x="335" y="270" width="120" height="52" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="395" y="291" class="user-name">jperez</text>
+  <text x="395" y="309" class="user-sub">Juan Perez</text>
+
+  <rect x="465" y="270" width="120" height="52" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="525" y="291" class="user-name">anavarro</text>
+  <text x="525" y="309" class="user-sub">Ana Navarro</text>
+
+  <!-- Badge Politica Finanzas -->
+  <rect x="335" y="350" width="250" height="155" rx="6" fill="#ffffff" stroke="#e0e0e0" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="335" y="350" width="250" height="26" rx="6" fill="#f3e5f5"/>
+  <text x="460" y="367" class="dept-title" fill="#4a148c" font-size="12px">Políticas: Finanzas</text>
+  <text x="350" y="395" class="badge-title">• Horario:</text>
+  <text x="410" y="395" class="badge-desc">Lun-Vie 08:00 a 18:00</text>
+  <text x="350" y="420" class="badge-title">• Sudoers:</text>
+  <text x="410" y="420" class="badge-desc">Denegado (Auditoría activa)</text>
+  <text x="350" y="445" class="badge-title">• Home:</text>
+  <text x="410" y="445" class="badge-desc">0700 (Aislamiento total)</text>
+  <text x="350" y="470" class="badge-title">• Bloqueo:</text>
+  <text x="410" y="470" class="badge-desc">3 intentos / 5 min (faillock)</text>
+  <text x="350" y="493" class="badge-title">• Expiración:</text>
+  <text x="425" y="493" class="badge-desc">30 a 45 días</text>
+
+  <!-- ==================== COLUMNA 3: OPERACIONES ==================== -->
+  <rect x="630" y="110" width="250" height="56" rx="6" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.8" filter="url(#shadow)"/>
+  <text x="755" y="133" class="dept-title" fill="#1b5e20">operaciones</text>
+  <text x="755" y="152" class="dept-sub">Grupo Primario | Monitoreo</text>
+
+  <!-- Lineas Depto -> Grupos -->
+  <path d="M 755 166 L 755 183 L 690 183 L 690 200" class="line" marker-end="url(#arrow)"/>
+  <path d="M 755 166 L 755 183 L 820 183 L 820 200" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Grupos Secundarios: logistica y mantenimiento -->
+  <rect x="630" y="200" width="120" height="36" rx="5" fill="#ffffff" stroke="#388e3c" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#shadow)"/>
+  <text x="690" y="223" class="group-text">logistica</text>
+
+  <rect x="760" y="200" width="120" height="36" rx="5" fill="#ffffff" stroke="#388e3c" stroke-width="1.2" stroke-dasharray="3 2" filter="url(#shadow)"/>
+  <text x="820" y="223" class="group-text">mantenimiento</text>
+
+  <!-- Lineas Grupos -> Usuarios -->
+  <line x1="690" y1="236" x2="690" y2="270" class="line" marker-end="url(#arrow)"/>
+  <line x1="820" y1="236" x2="820" y2="270" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Usuarios: cgarcia y rvega -->
+  <rect x="630" y="270" width="120" height="52" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="690" y="291" class="user-name">cgarcia</text>
+  <text x="690" y="309" class="user-sub">Carlos Garcia</text>
+
+  <rect x="760" y="270" width="120" height="52" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="820" y="291" class="user-name">rvega</text>
+  <text x="820" y="309" class="user-sub">Roberto Vega</text>
+
+  <!-- Badge Politica Operaciones -->
+  <rect x="630" y="350" width="250" height="155" rx="6" fill="#ffffff" stroke="#e0e0e0" stroke-width="1.2" filter="url(#shadow)"/>
+  <rect x="630" y="350" width="250" height="26" rx="6" fill="#e8f5e9"/>
+  <text x="755" y="367" class="dept-title" fill="#1b5e20" font-size="12px">Políticas: Operaciones</text>
+  <text x="645" y="395" class="badge-title">• Horario:</text>
+  <text x="705" y="395" class="badge-desc">Lun-Vie 08:00 a 18:00</text>
+  <text x="645" y="420" class="badge-title">• Sudoers:</text>
+  <text x="705" y="420" class="badge-desc">systemctl status, journalctl</text>
+  <text x="645" y="445" class="badge-title">• Home:</text>
+  <text x="705" y="445" class="badge-desc">0700 (Aislamiento total)</text>
+  <text x="645" y="470" class="badge-title">• Bloqueo:</text>
+  <text x="705" y="470" class="badge-desc">3 intentos / 5 min (faillock)</text>
+  <text x="645" y="493" class="badge-title">• Expiración:</text>
+  <text x="720" y="493" class="badge-desc">60 días</text>
+</svg>

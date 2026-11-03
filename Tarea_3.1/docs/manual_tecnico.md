@@ -2,6 +2,7 @@
 
 **Materia**: Sistemas Operativos  
 **Unidad**: Unidad 3 - Administración de Usuarios, Procesos y Seguridad  
+**Alumno**:Alan Azeim Rodriguez Villanueva  
 **Actividad**: Tarea 3.1  
 **Repositorio GitHub**: https://github.com/Alan-Az/Unidad_3  
 **Enlace Video YouTube**:  https://youtu.be/tjdtmJ8jSH0
@@ -19,6 +20,11 @@ La solución cuenta con soporte para **Linux (Ubuntu/Debian vía Bash)** y **Win
 ## 2. Esquema Organizativo y Roles Departamentales
 
 ### 2.1 Diagrama Jerárquico de Grupos y Roles
+
+![Diagrama Jerárquico de Grupos y Roles](diagrama_roles.svg)
+
+<details>
+<summary><b>Haga clic aquí para ver la definición en código Mermaid</b></summary>
 
 ```mermaid
 flowchart TD
@@ -55,7 +61,9 @@ flowchart TD
     style UsrRvega fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
 ```
 
-#### Representación Esquemática en Texto (Garantizada para exportación a PDF)
+</details>
+
+#### Representación Esquemática en Texto
 
 ```text
 [Superadministrador / Root]
