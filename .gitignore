@@ -49,3 +49,7 @@ $RECYCLE.BIN/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# --- Agentes y herramientas de IA locales ---
+.agents/
+**/.agents/

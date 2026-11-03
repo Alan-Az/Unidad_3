@@ -158,3 +158,4 @@ foreach ($row in $rows) {
 }
 
 Write-Log 'INFO' "=== Aprovisionamiento finalizado. Credenciales registradas en: $CredentialsFile ==="
+

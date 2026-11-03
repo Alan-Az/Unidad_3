@@ -32,3 +32,4 @@ if (Get-LocalGroup -Name "sistemas" -ErrorAction SilentlyContinue) {
 
 Write-Host "`n=== 3. Estado Actual de Políticas Locales de Seguridad ===" -ForegroundColor Cyan
 net accounts
+

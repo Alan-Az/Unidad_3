@@ -84,3 +84,4 @@ if (Test-Path -Path $Target -PathType Leaf) {
 }
 
 Write-Log 'INFO' "=== Operación de bajas finalizada ==="
+
