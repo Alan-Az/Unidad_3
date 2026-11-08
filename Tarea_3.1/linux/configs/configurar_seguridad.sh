@@ -92,4 +92,3 @@ EOF
 fi
 
 echo "=== Configuración de directivas de seguridad finalizada con éxito ==="
-

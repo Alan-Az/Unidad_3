@@ -76,26 +76,30 @@ crear_usuario() {
     done
     IFS="$IFS_ORIG"
 
+    # Alta en el sistema con home interactivo (-m) y shell bash (-s)
     if [[ -n "$clean_sec_groups" ]]; then
         useradd -m -s /bin/bash -g "$prim_group" -G "$clean_sec_groups" -c "$nombre" "$user"
     else
         useradd -m -s /bin/bash -g "$prim_group" -c "$nombre" "$user"
     fi
 
-    # Generar contraseña temporal segura
-    local temp_pass
-    temp_pass="Temp.$(openssl rand -hex 4)A1!"
+    # Generación de contraseña temporal con entropía alta
+    local temp_pass="Temp.$(openssl rand -hex 4)A1!"
     echo "$user:$temp_pass" | chpasswd
 
-    # Forzar cambio de contraseña en el primer inicio de sesión
+    # Forzar expiración inmediata para exigir cambio en primer inicio
+    # Nota: chage -d 0 marca la contraseña como vencida desde el 01/01/1970.
+    # En Linux esto puede bloquear el login normal por SSH.
+    # Para el video, el administrador entra con: sudo su - <usuario>
+    # y cambia la contraseña con: passwd
     chage -d 0 "$user"
 
-    # Configurar fecha de expiración de la cuenta
+    # Configurar fecha límite de cuenta activa
     local fecha_exp
     fecha_exp=$(date -d "+$dias_exp days" +%Y-%m-%d)
     chage -E "$fecha_exp" "$user"
 
-    # Aislamiento estricto de directorio home (solo propietario)
+    # Aislamiento estricto de directorio
     chmod 700 "/home/$user"
     chown "$user:$prim_group" "/home/$user"
 
@@ -108,23 +112,18 @@ main() {
     local csv_file="$1"
 
     mkdir -p "$(dirname "$LOG_FILE")"
-    touch "$LOG_FILE"
-    chmod 600 "$LOG_FILE"
-
-    touch "$CREDENTIALS_FILE"
-    chmod 600 "$CREDENTIALS_FILE"
+    touch "$LOG_FILE" && chmod 600 "$LOG_FILE"
+    touch "$CREDENTIALS_FILE" && chmod 600 "$CREDENTIALS_FILE"
 
     log "INFO" "=== Iniciando aprovisionamiento masivo desde: $csv_file ==="
 
     while IFS=',' read -r user nombre prim_group sec_groups dias_exp || [[ -n "$user" ]]; do
-        # Limpiar posibles retornos de carro de Windows (\r) y espacios
         user=$(echo "$user" | tr -d '\r' | xargs)
         nombre=$(echo "$nombre" | tr -d '\r' | xargs)
         prim_group=$(echo "$prim_group" | tr -d '\r' | xargs)
         sec_groups=$(echo "$sec_groups" | tr -d '\r' | xargs)
         dias_exp=$(echo "$dias_exp" | tr -d '\r' | xargs)
 
-        # Omitir cabecera, líneas vacías o comentadas
         [[ "$user" == "usuario" || -z "$user" || "$user" =~ ^[[:space:]]*# ]] && continue
 
         crear_usuario "$user" "$nombre" "$prim_group" "$sec_groups" "$dias_exp"
