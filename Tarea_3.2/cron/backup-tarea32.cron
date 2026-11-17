@@ -1,0 +1,6 @@
+﻿# Ejemplo de /etc/cron.d/tarea32-backup
+# Reemplace las rutas y valide que /mnt/respaldo-secundario esté montado.
+# Completo semanal: domingo a las 02:00.
+0 2 * * 0 root /usr/local/bin/backup.sh --source /srv/datos --destination /var/backups/unidad3 --state /var/lib/unidad3.snar --mode full --secondary /mnt/respaldo-secundario
+# Incremental diario: lunes a sábado a las 02:00.
+0 2 * * 1-6 root /usr/local/bin/backup.sh --source /srv/datos --destination /var/backups/unidad3 --state /var/lib/unidad3.snar --mode incremental --secondary /mnt/respaldo-secundario

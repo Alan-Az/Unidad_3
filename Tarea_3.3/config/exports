@@ -1,0 +1,3 @@
+# Ejemplo NFS: 192.0.2.0/24 es un rango TEST-NET reservado para documentación.
+# Reemplazarlo por la red privada autorizada antes de aplicar la configuración.
+/srv/raid1/compartido 192.0.2.0/24(rw,sync,no_subtree_check,root_squash)
