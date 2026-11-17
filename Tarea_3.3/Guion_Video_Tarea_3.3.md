@@ -1,175 +1,227 @@
+# Guion detallado de grabación — Tarea 3.3
 
-# Guion de video — Tarea 3.3: RAID, red e impresión
+## Qué vas a mostrar
 
-## Objetivo y formato
+Este video corresponde únicamente a Tarea 3.3. La Tarea 3.1 ya está hecha y no se toca; Tarea 3.2 tiene su propio guion. En Ubuntu muestra primero la explicación y las simulaciones seguras de los scripts. La carpeta actual no contiene evidencia de un RAID real degradado/reconstruido ni una impresión de red real: los logs incluidos son ejemplos marcados como simulación. No presentes esos ejemplos como operaciones que sí ocurrieron.
 
-Este guion corresponde únicamente a la Tarea 3.3. Está ordenado como tutorial grabado en pantalla e indica qué mostrar, qué narrar y qué resultado observar. La Tarea 3.1 ya está hecha y queda intacta; la Tarea 3.2 tiene su propio guion.
+Graba toda la pantalla con OBS o equivalente. Deja la cámara en la esquina inferior derecha, sin cubrir editor ni terminal. Amplía el texto. Para resaltar código, arrastra el mouse por el margen de números desde la línea indicada hasta la última línea indicada; no escribas dentro del archivo mientras explicas.
 
-Graba con OBS o equivalente. Coloca la cámara web en la esquina inferior derecha y asegúrate de que no tape terminal, editor o salidas. Aumenta el zoom y deja cada comando visible. Usa una máquina virtual Ubuntu. La demostración se mantiene en simulación: crear arreglos RAID reales puede escribir metadatos en los discos seleccionados y formatear o montar discos puede destruir datos. No uses dispositivos del anfitrión.
+~~~text
+Duración sugerida: 10 a 14 minutos
+Entorno: máquina virtual Ubuntu
+Modo de esta demostración: simulación y pruebas aisladas
+Nunca añadas --apply a los comandos de simulación
+~~~
 
-## Carpetas de este proyecto
+No crees una carpeta llamada Linux. Abre en Ubuntu la carpeta Tarea_3.3 copiada a tu carpeta personal o compartida con la VM. Windows C:\Dev\Rriojas\Unidad_3 no es una ruta que Bash Ubuntu pueda abrir sin una carpeta compartida configurada.
 
-| Carpeta o archivo | Por qué existe y qué enseñar |
-|---|---|
-| Tarea_3.3/ | Agrupa la actividad de redundancia, compartición de archivos y colas de impresión. |
-| config/ | Separa archivos que leerían los servicios: Samba, NFS y CUPS. Son plantillas que requieren adaptar rutas y red antes de instalarlas. |
-| docs/ | Guarda explicación y reporte técnico. Ahí se documenta la topología, simulación de fallo/reconstrucción y pruebas. |
-| logs/ | Mantiene evidencia de ejemplo de estado degradado y reconstrucción. Son registros simulados; no prueban que se desconectó un disco físico. |
-| scripts/ | Agrupa programas Bash para mostrar/preparar RAID y administrar colas o trabajos CUPS. |
-| tests/ | Contiene una prueba aislada con herramientas falsas para confirmar que la simulación no llama mdadm, mount, lpadmin o lp reales. |
-| README.md | Presenta el proyecto y explica el modo seguro y sus condiciones. |
+## Antes de grabar: confirma que estás en el proyecto correcto
 
-## Antes de grabar
+Abre la Terminal de Ubuntu y escribe:
 
-1. Inicia la VM Ubuntu de laboratorio. Confirma que la ventana activa es la máquina virtual, no Windows anfitrión.
-2. Abre Tarea_3.3 en el editor y muestra el árbol de carpetas. Aumenta el tamaño del texto.
-3. En OBS, agrega captura de pantalla y cámara; deja la cámara en la esquina inferior derecha.
-4. No uses discos reales ni opciones --apply. La prueba usa dispositivos ficticios y herramientas reemplazadas. La IP 192.0.2.44 pertenece a un rango reservado para documentación, no identifica una impresora real.
-5. Di: “La demostración comienza en simulación. No desconecto un disco físico ni envío trabajos a una impresora real. Para una práctica real hacen falta discos virtuales desechables y autorización del administrador de la VM”.
+~~~bash
+cd ~/Unidad_3/Tarea_3.3
+pwd
+printf '%s\n' config docs logs scripts tests README.md
+~~~
 
-## Grabación paso a paso
+Si guardaste Unidad_3 en otra ruta, cambia el primer comando por esa ubicación real. pwd debe terminar en Tarea_3.3. Si cd muestra error, localiza la carpeta de la VM antes de seguir. En el editor, expande config, docs, logs, scripts y tests.
 
-### Escena 1 — Presentar la meta y el árbol
+Di: “Estoy dentro de Tarea 3.3 en mi máquina virtual Ubuntu. El proyecto contiene plantillas de red e impresión, scripts, pruebas aisladas, reportes y logs de ejemplo. Primero explicaré qué hace cada parte y después ejecutaré las simulaciones, que no modifican discos ni envían trabajos a una impresora.”
 
-Muestra la carpeta raíz y abre config, docs, logs, scripts y tests. Explica la razón de cada una con la tabla. Después señala que el proyecto eligió RAID 1: dos dispositivos forman un espejo; si falla uno, el arreglo puede seguir disponible con el otro, pero la capacidad útil se aproxima a la de un solo disco.
+## Escena 1 — explica para qué existe cada carpeta
 
-Narra: “Esta actividad cubre almacenamiento redundante, una carpeta compartida por red y administración de colas de impresión. Los archivos están separados entre configuración, automatización, pruebas y evidencia para poder revisar cada parte”.
+En el explorador de archivos del editor, señala cada carpeta y di:
 
-### Escena 2 — Recorrer raid1_setup.sh línea por línea
+- config/: “Aquí están las plantillas de Samba, NFS y CUPS. Describen una configuración, pero no la instalan ni la aplican por sí solas.”
+- docs/: “Aquí está el reporte y el manual técnico. Reúnen el diseño, los límites de la prueba y la evidencia.”
+- logs/: “Aquí se guardan ejemplos de degradación y reconstrucción. El propio proyecto los marca como simulados; no son registros obtenidos al desconectar discos.”
+- scripts/: “Aquí están los cinco programas Bash: creación y montaje de RAID, consulta de estado, configuración de colas y envío de trabajos.”
+- tests/: “Aquí hay una prueba aislada. Crea herramientas falsas en un directorio temporal para verificar la simulación sin cambiar servicios reales.”
 
-Abre scripts/raid1_setup.sh. Desplázate de arriba abajo, enseñando los números. Lee cada variable, parámetro y comando visible y explica su efecto. Los intervalos cubren el archivo actual; explica también comentarios y líneas auxiliares.
+Luego di: “El diseño usa RAID 1: dos discos guardan una copia espejo, así que el arreglo puede seguir funcionando si uno falla. RAID no sustituye los respaldos. La capacidad útil se aproxima a la de un solo miembro.”
 
-| Líneas | Qué explicar en pantalla |
-|---|---|
-| 1–2 | El shebang selecciona Bash; las opciones estrictas detienen la ejecución ante errores y fallos dentro de tuberías. |
-| 4–8 | Variables por defecto para dos dispositivos, nombre del arreglo, aplicación apagada y confirmación vacía. El valor predeterminado conserva modo seguro. |
-| 10–17 | usage() enseña ejemplos; fail() informa por stderr y finaliza con código de error. |
-| 19–29 | El bucle lee --device1, --device2, --array, --apply y --confirm. Las opciones con valor consumen el siguiente argumento; --help muestra ayuda; una opción desconocida falla. |
-| 31–41 | Valida que los dos miembros sean dispositivos distintos bajo /dev y que el arreglo empiece por /dev/md. |
-| 43–48 | Sin aplicación real imprime el comando mdadm --create planeado y termina sin escribir discos. Esta es la parte que se muestra. |
-| 50–54 | La rama real requiere frase de confirmación destructiva, permisos root y mdadm, lsblk y wipefs. Explica por qué no la ejecutas. |
-| 56–68 | Inspecciona cada miembro: debe ser dispositivo de bloque completo, sin particiones/hijos, firmas existentes ni montajes. |
-| 70–75 | Rechaza un arreglo existente y crea RAID 1 solo tras validaciones y confirmación. No crea sistema de archivos ni monta el arreglo. |
+## Escena 2 — recorre raid1_setup.sh
 
-En la terminal, desde Tarea_3.3, muestra una simulación segura con rutas ficticias:
+Abre scripts/raid1_setup.sh y resalta estos rangos. Después de cada selección, di el texto sugerido.
 
-    bash scripts/raid1_setup.sh --device1 /dev/mock-a --device2 /dev/mock-b
+Selecciona líneas 1–17.
 
-Se espera ver una operación marcada como simulación y que mdadm no se ejecute. No añadas --apply.
+Di: “La línea 1 indica que se use Bash. La línea 2 detiene el script ante errores y fallos de tuberías. Las variables guardan los dos discos, el nombre del arreglo y la confirmación. Por defecto apply vale no, de modo que el programa empieza en simulación. usage muestra las opciones; fail imprime el motivo de rechazo y termina.”
 
-### Escena 3 — Explicar montaje y estado del RAID
+Selecciona líneas 19–29.
 
-Abre scripts/raid1_mount.sh y recorre todo el archivo de arriba abajo.
+Di: “Este ciclo lee lo que escribo después del nombre del script. device1 y device2 reciben los discos; array cambia el nombre del RAID; apply solicita la rama real y confirm contiene la frase de confirmación. La ayuda explica el uso y cualquier parámetro desconocido se rechaza.”
 
-| Líneas | Qué explicar |
-|---|---|
-| 1–7 | Bash y parada ante errores; valores iniciales del arreglo, punto de montaje, simulación y confirmación. |
-| 9–12 | fail() informa y termina de forma controlada. |
-| 14–23 | El analizador recibe dispositivo, punto de montaje y opciones de aplicación/confirmación; rechaza opciones desconocidas. |
-| 25–27 | Solo admite un arreglo /dev/md, exige ruta absoluta y evita montar sobre la raíz. |
-| 29–34 | Simulación muestra la orden mount solicitada y comprueba arreglo/sistema de archivos, sin montar. |
-| 36–41 | El modo real exige token de confirmación, root, dispositivo de bloque y utilidades del sistema. |
-| 42–48 | Rechaza enlaces simbólicos, montajes previos, rutas existentes y formatos fuera de ext4/XFS. |
-| 49–51 | Crea el punto y monta tras validar. No actualiza fstab, así que no persiste al reiniciar. |
+Selecciona líneas 31–41.
 
-Abre scripts/raid1_status.sh y explica sus 11 líneas: Bash y parada por errores (1–2), arreglo predeterminado (4), lectura de --array y ayuda (5–8), validación de ruta md (9), comprobación de mdadm y recordatorio del servidor Linux (10), y mdadm --detail para consultar el estado (11). Es una consulta; si no existe un RAID real en la VM, no inventes una salida. Puedes mostrar el comando esperado y el log de ejemplo, etiquetados como simulación.
+Di: “Estas validaciones exigen dos discos diferentes, rutas explícitas dentro de /dev y un destino dentro de /dev/md. Evitan aceptar el mismo miembro dos veces o una ruta con forma inesperada.”
 
-### Escena 4 — Explicar las colas de impresión
+Selecciona líneas 43–48.
 
-Abre scripts/print_queues.sh. Recorre el código completo y señala estas partes:
+Di: “Este es el camino predeterminado que voy a probar. Imprime el comando mdadm que se planea usar, incluye el aviso de que no tocó discos y termina. No ejecuta mdadm porque no añadí --apply.”
 
-| Líneas | Qué explicar |
-|---|---|
-| 1–6 | Bash, manejo estricto, IP reservada de documentación, aplicación desactivada y confirmación vacía. |
-| 8–11 | fail() presenta errores y termina. |
-| 13–21 | El bucle analiza --printer-ip, --apply, --confirm y ayuda; exige valores y rechaza opciones desconocidas. |
-| 23–25 | Divide y comprueba los cuatro octetos de una dirección IPv4; evita valores fuera del rango. |
-| 27–32 | Simula las colas aula_normal y aula_prioridad con IPP. La IP reservada es de ejemplo y lpadmin no se ejecutó. |
-| 35–38 | Aplicar cambios requiere confirmación, root, una IP real reemplazada y lpadmin instalado. |
-| 39–41 | Crea colas driverless IPP y comparte la prioritaria; indica cómo consultar con lpstat. |
+Selecciona líneas 50–75.
 
-Muestra el comando seguro:
+Di: “El resto solo se alcanza si alguien habilita la aplicación real. Requiere confirmación explícita, privilegios de administrador y herramientas disponibles. Examina que cada dispositivo sea un disco completo, que no tenga firmas, particiones ni montajes, y que el nombre del arreglo todavía no exista. Al final sí ejecutaría mdadm --create. Por eso no usaré esta rama en la grabación.”
 
-    bash scripts/print_queues.sh
+En la terminal ejecuta el ejemplo seguro:
 
-Explica la salida y confirma que la prueba automatizada verifica que lpadmin no se llamó.
+~~~bash
+bash scripts/raid1_setup.sh --device1 /dev/mock-a --device2 /dev/mock-b
+~~~
 
-Después abre scripts/print_job.sh y recorre sus 43 líneas.
+Deja la salida visible y di: “Las rutas mock son ficticias. La salida marcada SIMULACIÓN muestra el plan, pero no creó un arreglo ni escribió metadatos en ningún disco.”
 
-| Líneas | Qué explicar |
-|---|---|
-| 1–8 | Selección de Bash, manejo de errores, cola normal, prioridad predeterminada, archivo vacío y modo de simulación. |
-| 10–13 | fail() presenta el problema y termina. |
-| 15–25 | Lee cola, prioridad, archivo y confirmación; procesa ayuda y parámetros desconocidos. |
-| 27–30 | Limita la cola a las definidas, restringe prioridad al entero de 1 a 100 y exige un archivo. |
-| 32–36 | En simulación muestra lp, cola y prioridad sin enviar el archivo. |
-| 38–41 | En modo real exige token SEND_FILE_TO_PRINTER, archivo regular que no sea enlace simbólico y el programa lp disponible. |
-| 42–43 | lp envía el trabajo; lpstat permite consultar la cola. No uses la rama real en este video. |
+## Escena 3 — recorre raid1_mount.sh y raid1_status.sh
 
-### Escena 5 — Revisar configuración de red e impresión
+Abre scripts/raid1_mount.sh. Resalta líneas 1–12 y di:
 
-Abre config/smb.conf y recorre sus 21 líneas.
+Di: “Aquí se define Bash, el comportamiento ante errores, el arreglo predeterminado, el punto de montaje y el modo seguro. La función fail presenta los errores. La simulación comienza activa y la confirmación está vacía.”
 
-| Líneas | Qué explicar |
-|---|---|
-| 1–2 | Comentarios: adapta grupo y usuarios para el laboratorio. |
-| 3 | Inicia la sección global de Samba. |
-| 4–10 | Define grupo de trabajo, servidor independiente, autenticación por usuarios, invitados bloqueados, versión SMB mínima y archivo/límite del log. |
-| 12 | Inicia el recurso compartido unidad3. |
-| 13–20 | Define ruta, visibilidad, escritura, invitados bloqueados, grupo permitido/forzado y máscaras. 2770 conserva grupo y permisos compartidos. |
-| 21 | Revisa el cierre/separador según la versión del archivo visible. |
+Resalta líneas 14–22 y di:
 
-Abre config/exports. Explica las tres líneas: dos comentarios aclaran que 192.0.2.0/24 solo documenta una red; la última exporta /srv/raid1/compartido con escritura sincronizada, sin comprobación de subárbol y root_squash para reducir privilegios de root remoto. Sustituye la red solo dentro de la VM privada.
+Di: “Este ciclo interpreta dispositivo, punto de montaje, solicitud de aplicación y confirmación. Si falta un valor o llega una opción desconocida, el script se detiene con un mensaje.”
 
-Abre config/cupsd.conf y explica cada directiva en orden:
+Resalta líneas 24–33 y di:
 
-| Líneas | Qué explicar |
-|---|---|
-| 1 | Comentario: es plantilla restrictiva y el acceso remoto empieza apagado. |
-| 2 | Listen localhost:631 limita el servicio al propio equipo. |
-| 3–5 | Browsing desactiva anuncios; WebInterface habilita la interfaz; DefaultShared desactiva compartir por defecto. |
-| 6–9 | La sección Location de raíz admite acceso solo desde localhost. |
-| 10–13 | La administración también queda limitada a localhost. |
-| 14–19 | Editar configuración requiere autenticación del grupo del sistema y acceso local. |
-| 20–21 | Comentarios sobre agregar solo una subred privada autorizada; no usar Allow All ni exponer puerto 631 a Internet. |
+Di: “El script acepta como origen solo una ruta bajo /dev/md, requiere que el punto de montaje sea una ruta absoluta y evita usar la raíz del sistema. Sin --apply, imprime el comando mount planeado y aclara que primero deben existir el arreglo y su sistema de archivos.”
 
-Di: “Son plantillas. Editarlas no instala Samba, NFS ni CUPS. Primero se validan rutas y red de la VM; no se exponen servicios a Internet”.
+Resalta líneas 35–48 y di:
 
-### Escena 6 — Ejecutar la prueba aislada
+Di: “Esta es la rama de montaje real: requiere una confirmación, administrador, un dispositivo de bloque, un sistema de archivos ext4 o xfs y un punto de montaje libre. Si todo es válido, monta el arreglo. No actualiza fstab, así que el montaje no queda configurado para el próximo reinicio.”
 
-Muestra tests/test_tarea33.sh completo; desplázate de principio a fin sin saltar líneas. Mientras lo haces, explica toda su secuencia:
+En la terminal ejecuta:
 
-1. Bash y opciones estrictas activan manejo de errores. root calcula la carpeta del proyecto; mktemp crea un entorno temporal; trap lo elimina al terminar.
-2. fail() y pass() etiquetan fallos y aprobaciones. Un bucle corre bash -n en cada script para revisar sintaxis.
-3. Crea sustitutos de mdadm, mount, lpadmin y lp dentro del temporal. Guardan las llamadas en una traza. PATH hace que la prueba encuentre esos sustitutos antes que las herramientas reales.
-4. Prueba crear RAID en modo seguro: busca el comando simulado y comprueba que mdadm falso no se haya llamado.
-5. Prueba montaje simulado y verifica que solo se haya mostrado mount.
-6. Prueba que la salida CUPS incluya las dos colas, mientras lpadmin sigue sin ejecutarse.
-7. Crea un archivo de texto temporal y solicita un trabajo simulado a aula_prioridad con prioridad 80; comprueba que lp no se haya llamado.
-8. Prueba la rama de confirmación usando lp falso. La traza debe contener cola, prioridad y archivo; no se envía nada a una impresora.
-9. Verifica el rechazo de miembros RAID duplicados, dispositivos ficticios en modo real, octetos IPv4 fuera de rango e IP reservada de documentación en modo real.
-10. Imprime resumen final y elimina la carpeta temporal.
+~~~bash
+bash scripts/raid1_mount.sh --device /dev/md/mock --mountpoint /tmp/unidad3-demo
+~~~
 
-Ejecuta desde la raíz del proyecto:
+Di: “También es simulación. No existe aquí una orden de montaje activa; solo se muestra el plan para una ruta ficticia.”
 
-    bash tests/test_tarea33.sh
+Abre scripts/raid1_status.sh y selecciona líneas 1–11. Di:
 
-Lee la salida real. PASS significa que pasó el escenario aislado con sustitutos; no significa que se creó RAID, se conectó una impresora o se compartió una carpeta real.
+Di: “Este archivo es una consulta de estado. Acepta opcionalmente el nombre de un arreglo, verifica que la ruta esté bajo /dev/md, comprueba que exista mdadm y finalmente ejecuta mdadm --detail. Para ver un estado real debe existir un RAID real en esta VM. No lo ejecuto como si hubiera un arreglo cuando no lo hay; mostraré los logs de ejemplo claramente identificados como simulados.”
 
-### Escena 7 — Mostrar logs y reporte
+## Escena 4 — recorre el script que configura colas CUPS
 
-Abre logs/ y docs/. Muestra el nombre del log que contiene la carpeta y explica su texto como ejemplo de simulación, no como evidencia de desconexión física. En el reporte, revisa que el diagrama indique los dos discos espejo, la carpeta compartida, cómo se detectaría degradación y qué cola representa cada prioridad. Si la práctica real no se hizo, di “simulación” y deja pendientes las capturas reales.
+Abre scripts/print_queues.sh.
 
-### Escena 8 — Cierre
+Selecciona líneas 1–11 y di:
 
-Resume: “El modo predeterminado muestra un plan. La prueba sustituye herramientas del sistema por comandos falsos y comprueba que la simulación no las ejecute. RAID real, montaje y cambios CUPS requieren recursos desechables y autorización en una VM; no se tocaron discos del anfitrión”. Mantén la cámara visible hasta acabar.
+Di: “El script usa Bash y se detiene ante errores. La IP predeterminada, 192.0.2.44, es una dirección reservada para documentación, no es una impresora. apply empieza en no. La función fail comunica errores y termina.”
 
-## Lista rápida antes de entregar
+Selecciona líneas 13–25 y di:
 
-- [ ] Cámara en esquina inferior derecha sin tapar la pantalla.
-- [ ] Se explicó la razón de cada carpeta.
-- [ ] Se recorrieron scripts, pruebas y los tres archivos de configuración de arriba abajo.
-- [ ] Se mostró RAID y colas en simulación, sin --apply.
-- [ ] Se ejecutó la prueba aislada y se explicó su resultado real.
-- [ ] Los logs se identificaron como simulados.
-- [ ] No se afirma que se desconectó un disco o se imprimió en red si no se observó esa operación.
+Di: “Este ciclo recibe la IP, el indicador apply y la confirmación. Después valida que la dirección tenga cuatro octetos entre 0 y 255. Si escribo una IP fuera de rango o una opción desconocida, no continúa.”
+
+Selecciona líneas 27–33 y di:
+
+Di: “Este es el modo que voy a mostrar. Presenta dos colas de ejemplo: aula_normal y aula_prioridad, usando IPP. Escribe la IP reservada en las órdenes que propone, avisa que es documentación y termina sin ejecutar lpadmin.”
+
+Selecciona líneas 35–41 y di:
+
+Di: “La rama real exige la frase de confirmación, permisos de administrador, una IP real que reemplace la reservada y el programa lpadmin instalado. Solo después crearía las colas. No activo esa rama en esta simulación.”
+
+En la terminal ejecuta:
+
+~~~bash
+bash scripts/print_queues.sh
+~~~
+
+Di: “La salida debe comenzar con SIMULACIÓN y mostrar las dos órdenes lpadmin previstas. Eso demuestra la lógica de presentación del script, no que CUPS tenga las colas instaladas.”
+
+## Escena 5 — recorre print_job.sh y prueba una prioridad
+
+Abre scripts/print_job.sh. Selecciona líneas 1–13 y di:
+
+Di: “Estas líneas preparan Bash, los errores, la cola normal predeterminada, prioridad 40, el archivo vacío, el modo seguro y la función que informa fallos.”
+
+Selecciona líneas 15–30 y di:
+
+Di: “El ciclo recibe cola, prioridad y archivo. Luego limita las colas a aula_normal o aula_prioridad, valida que la prioridad sea un entero entre 1 y 100 y exige un archivo.”
+
+Selecciona líneas 32–36 y di:
+
+Di: “Sin --apply, el programa imprime el comando lp que se usaría y sale. No manda nada a CUPS.”
+
+Selecciona líneas 38–43 y di:
+
+Di: “La rama real requiere una confirmación exacta, que el archivo exista y no sea un enlace simbólico, y que lp esté instalado. Después enviaría el trabajo y se podría consultar con lpstat. No usaré esa opción en esta práctica.”
+
+Crea un archivo ficticio y simula una impresión prioritaria:
+
+~~~bash
+printf 'Documento ficticio para la demostracion.\n' > /tmp/tarea33-demo.txt
+bash scripts/print_job.sh --queue aula_prioridad --priority 80 --file /tmp/tarea33-demo.txt
+~~~
+
+Di: “El comando muestra que elegiría la cola aula_prioridad con prioridad 80. La palabra SIMULACIÓN confirma que no envió el documento a una impresora.”
+
+## Escena 6 — explica las plantillas Samba, NFS y CUPS
+
+Abre config/smb.conf y recorre las líneas 1–21.
+
+- Selecciona 1–3 y di: “Los comentarios indican que habrá que reemplazar el grupo y los usuarios de ejemplo. global inicia las opciones generales del servicio Samba.”
+- Selecciona 4–10 y di: “Se elige un servidor independiente con autenticación por usuario, se bloquean invitados, se fija una versión mínima SMB y se define dónde guardar logs y su tamaño máximo.”
+- Selecciona 12–21 y di: “La sección unidad3 comparte /srv/raid1/compartido. Solo el grupo indicado puede usarla; se asigna ese grupo a nuevos archivos y se definen máscaras de archivo y directorio para mantener permisos compartidos. Es una plantilla, todavía no es una carpeta accesible por red.”
+
+Abre config/exports y selecciona sus líneas 1–3. Di:
+
+Di: “Este ejemplo NFS usa 192.0.2.0/24, una red reservada para documentación. La línea final exporta la carpeta con escritura sincronizada y root_squash para que el root remoto no conserve privilegios de root en el servidor. Antes de usar NFS en un laboratorio se debe reemplazar la red por la subred privada autorizada.”
+
+Abre config/cupsd.conf y recorre líneas 1–21.
+
+- Selecciona 1–5 y di: “El acceso remoto queda apagado: CUPS escucha en localhost, no anuncia impresoras y no comparte por defecto.”
+- Selecciona 6–13 y di: “Las rutas principales y de administración permiten acceso local solamente.”
+- Selecciona 14–21 y di: “La configuración administrativa requiere autenticación del grupo del sistema. Los comentarios prohíben abrir CUPS a cualquier dirección o exponer el puerto 631 a Internet. Para una impresora en red, primero se debe definir una subred privada y una regla limitada.”
+
+Di: “Estos archivos describen configuraciones. Editar o mostrar una plantilla no instala Samba, NFS o CUPS, ni demuestra que un cliente remoto pueda conectarse.”
+
+## Escena 7 — ejecuta el test_tarea33.sh y explica lo que comprueba
+
+Abre tests/test_tarea33.sh. Desplázate línea por línea; selecciona cada bloque y explica:
+
+- Líneas 1–18: “Calcula la raíz del proyecto, crea un directorio temporal y configura su limpieza automática. Las funciones fail y pass hacen legible cada resultado. El bucle ejecuta bash -n para verificar la sintaxis de los scripts.”
+- Líneas 20–34: “Crea versiones falsas de mdadm, mount, lpadmin y lp. Las llamadas se anotarían en un archivo de traza. Después verifica que la simulación de RAID solo imprima el plan y no llame a mdadm.”
+- Líneas 36–47: “Comprueba el montaje simulado, las dos colas CUPS y la impresión con prioridad 80. Las herramientas falsas permiten observar si se habrían llamado, sin operar sobre servicios reales.”
+- Líneas 49–62: “Para la rama de impresión confirmada usa lp falso y verifica que el registro contenga la cola, la prioridad y el archivo. No se envía realmente.”
+- Líneas 64–82: “Comprueba que se rechacen miembros RAID repetidos, discos ficticios en modo real, IPv4 fuera de rango y la IP reservada para documentación. Luego imprime el resultado y el temporal se elimina.”
+
+Vuelve a la raíz Tarea_3.3 en la terminal y ejecuta:
+
+~~~bash
+bash -n scripts/raid1_setup.sh && bash -n scripts/raid1_mount.sh && bash -n scripts/raid1_status.sh && bash -n scripts/print_queues.sh && bash -n scripts/print_job.sh
+bash tests/test_tarea33.sh
+~~~
+
+Deja toda la salida de la prueba visible. Di:
+
+Di: “La primera orden revisa la sintaxis Bash de los cinco scripts. La segunda ejecuta pruebas aisladas. Si aparece el mensaje final de éxito, se probaron estos casos con comandos ficticios y rutas de práctica. Esto no confirma un RAID real, una red compartida ni una impresión física.”
+
+## Escena 8 — muestra los logs y aclara la evidencia pendiente
+
+Abre logs/degradacion_simulada.log y logs/reconstruccion_simulada.log en el editor. Lee las líneas visibles y di:
+
+Di: “Estos logs muestran el aspecto de un ejemplo de degradación y reconstrucción. Sus nombres y contenido dicen que son simulados; no los presentaré como si mdadm hubiera observado un fallo real.”
+
+Luego abre docs/reporte-tecnico.md y señala el diagrama RAID, la carpeta compartida y las colas. Di:
+
+Di: “El reporte resume la topología y la configuración prevista. Para demostrar el punto de fallo y reconstrucción real hacen falta discos virtuales vacíos conectados a esta VM y capturas de mdadm antes, durante y después. Para probar impresión en red se necesita CUPS activo, una impresora o destino IPP de laboratorio y una estación cliente autorizada. Esos resultados no se producen con la prueba aislada de este proyecto.”
+
+## Cierre — texto para decir
+
+Di: “En esta grabación recorrí cada script y cada plantilla, probé el modo de simulación y ejecuté las pruebas aisladas. No desconecté discos, no formateé volúmenes y no envié una impresión real. Los archivos permiten explicar el flujo seguro y validar algunas reglas; la evidencia de RAID degradado/reconstruido y de impresión por red debe obtenerse aparte dentro de una VM de laboratorio.”
+
+Mantén la cámara visible hasta terminar. Si no realizaste la práctica real, conserva la palabra simulación en la narración, en los logs y en el reporte.
+
+## Lista rápida para revisar el video
+
+- [ ] Cámara en la esquina inferior derecha y texto legible.
+- [ ] Explicaste por qué existe cada carpeta.
+- [ ] Mostraste rangos de líneas y narraste su función.
+- [ ] Ejecutaste las simulaciones sin --apply.
+- [ ] Ejecutaste el análisis de sintaxis y tests/test_tarea33.sh.
+- [ ] Diferenciaste las pruebas aisladas de la operación real.
+- [ ] Identificaste los logs como simulados.
+- [ ] No afirmaste una desconexión de disco ni una impresión de red que no hayas realizado.

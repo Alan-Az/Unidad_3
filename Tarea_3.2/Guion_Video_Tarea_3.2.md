@@ -1,125 +1,185 @@
-# Guion de video — Tarea 3.2: permisos, cuotas y respaldos
+# Guion detallado de grabación — Tarea 3.2
 
-## Objetivo y formato
+## Qué vas a mostrar
 
-Este guion corresponde únicamente a la Tarea 3.2. Sigue el orden de una grabación de pantalla e indica qué mostrar, qué decir y qué resultado observar. La Tarea 3.1 ya está realizada y queda fuera de este proyecto; la Tarea 3.3 tiene su propio guion.
+Este video es solo del proyecto Tarea 3.2. La Tarea 3.1 ya está hecha y no se modifica. Graba la pantalla en Ubuntu; coloca tu cámara en la esquina inferior derecha. Aumenta el zoom del editor y deja quieta cada selección mientras explicas.
 
-Graba la pantalla con OBS o una herramienta equivalente. Activa la cámara y colócala en la esquina inferior derecha, sin cubrir la terminal ni el código. Habla despacio, aumenta el zoom del editor y deja pausas para que se lean las salidas. La demostración se hace en una máquina virtual Ubuntu de práctica; no ejecutes comandos de cuotas o permisos sobre Windows anfitrión.
+No crees una carpeta llamada Linux. Conserva la estructura actual: abre en Ubuntu la carpeta Tarea_3.2 que copiaste a tu carpeta personal o que compartiste con la máquina virtual. Una ruta de Windows como C:\Dev\Rriojas\Unidad_3 no funciona directamente en la terminal Ubuntu a menos que hayas configurado una carpeta compartida.
 
-## Carpetas de este proyecto
+~~~text
+Duración sugerida: 9 a 12 minutos
+Editor: VS Code o editor de texto con números de línea visibles
+Terminal: Bash dentro de la VM Ubuntu
+Cámara: esquina inferior derecha
+~~~
 
-| Carpeta o archivo | Por qué existe y qué enseñar |
-|---|---|
-| Tarea_3.2/ | Contiene lo relacionado con permisos, cuotas y respaldos, separado de las demás actividades. |
-| configs/ | Guarda plantillas POSIX/ACL y herramientas para consultar cuotas. Incluye una plantilla FSRM de Windows, alternativa que no se ejecuta en Ubuntu. |
-| cron/ | Conserva el calendario de respaldo como ejemplo editable. El archivo no instala ni programa cron. |
-| docs/ | Reúne explicación, reporte técnico y evidencia de restauración. Sirve para leer el diseño y guardar evidencia cuando el alumno haga la práctica. |
-| tests/ | Aísla pruebas automáticas con datos temporales. Prueba la lógica del respaldo/restauración, no cuotas reales; nunca debe usar carpetas personales. |
-| windows/ | Explica cómo crear una tarea programada en Windows, alternativa al cron de Ubuntu. |
-| backup.sh | Respaldo principal para Ubuntu/Linux: completo, incremental, registro, hash, copia secundaria y restauración. |
-| backup.ps1 | Alternativa para Windows PowerShell; no se ejecuta en Ubuntu. |
-| README.md | Punto de entrada: resume el propósito, el uso y las precauciones. |
+## Antes de grabar: abre el proyecto y comprueba la ruta
 
-## Antes de grabar
+En la VM, abre Terminal y escribe:
 
-1. Abre la máquina virtual Ubuntu y confirma que es la VM de laboratorio, no el anfitrión. Usa una cuenta de práctica.
-2. Abre Tarea_3.2 en el editor. Aumenta la letra para que se vean el código y el número de línea.
-3. En OBS, agrega la captura de pantalla y la cámara. Pon la cámara abajo a la derecha y comprueba que no tape comandos ni resultados.
-4. Ten lista una carpeta temporal de prueba dentro de la VM. Nunca elijas una carpeta con tus documentos personales.
-5. Di: “Los ejemplos principales se ejecutan en Ubuntu. Las cuotas del sistema y una programación real requieren una VM de laboratorio y configuración deliberada. Las pruebas automáticas usan datos temporales; no equivalen a cuotas de producción”.
+~~~bash
+cd ~/Unidad_3/Tarea_3.2
+pwd
+printf '%s\n' *
+~~~
 
-## Grabación paso a paso
+Si guardaste la carpeta en otra ubicación, cambia solo la ruta del primer comando. La salida de pwd debe terminar en Tarea_3.2. La lista debe incluir backup.sh, configs, cron, docs y tests. Si la terminal dice que la ruta no existe, abre la carpeta real de la VM desde el administrador de archivos; no continúes con una ruta inventada.
 
-### Escena 1 — Presentar la actividad y el árbol
+Di: “Estoy dentro de la carpeta de la actividad 3.2 en mi máquina virtual Ubuntu. Aquí están separados el script de respaldo, las plantillas de permisos y cuotas, el ejemplo de programación, las pruebas y el reporte. Voy a trabajar con datos temporales de práctica.”
 
-Muestra Tarea_3.2 y expande configs, cron, docs, tests y windows. Señala cada carpeta y explica su propósito con la tabla anterior. Aclara que docs conserva el reporte y evidencia del alumno; una plantilla o captura de ejemplo no demuestra por sí misma una restauración real.
+## Escena 1 — presenta la estructura y el propósito
 
-Narra: “La actividad cubre permisos POSIX y ACL, cuotas por usuario y grupo, y respaldos completos e incrementales. Separé recetas, automatización, pruebas y documentos para encontrar cada cosa sin mezclarlas”.
+En el editor, abre README.md y selecciona con el mouse las líneas 1–19. Mantén la selección visible mientras dices:
 
-### Escena 2 — Recorrer backup.sh línea por línea
+Di: “Esta actividad propone una política de respaldos completos e incrementales y guarda dos versiones del script: Bash para Linux y PowerShell para Windows. En esta grabación voy a demostrar la versión Bash dentro de Ubuntu. Las carpetas configs y cron contienen plantillas: tenerlas en el proyecto no significa que las cuotas o la programación ya estén activadas en el sistema.”
 
-Abre backup.sh. Recorre el archivo de arriba abajo; desplaza la pantalla para que se vean los números de línea. Explica cada línea visible usando la guía por bloques: menciona los nombres de variables, opciones y comandos, y explica qué dato recibe o qué efecto tiene cada uno. Los intervalos cubren las líneas actuales del archivo; no omitas líneas ejecutables entre ellos.
+Ahora señala en el explorador del editor estas carpetas, una por una: configs, cron, docs y tests. Di:
 
-| Líneas | Qué explicar mientras se muestran |
-|---|---|
-| 1–5 | La primera línea elige Bash. Los comentarios describen el propósito; las opciones estrictas detienen el script ante errores o variables vacías. IFS controla cómo se separan palabras. umask 077 crea archivos privados por defecto. |
-| 7–20 | usage() imprime ayuda; fail() informa y termina con error; log() añade hora UTC y escribe en pantalla y en el registro; need_value() verifica que una opción tenga su valor. |
-| 22–44 | Las variables guardan origen, destino, estado, modo, copia secundaria y restauración. while/case interpreta los parámetros. shift avanza a la opción siguiente. Se rechazan las opciones desconocidas. |
-| 46–71 | Restaurar exige confirmación. Primero compara SHA-256 y revisa las rutas dentro del archivo. Rechaza rutas absolutas o con .. para evitar extraer fuera del destino. Después registra inicio/fin y sale de la rama de restauración. |
-| 73–92 | Comprueba el origen y el modo; normaliza rutas; evita guardar el respaldo dentro de su propio origen. Exige un destino secundario existente/montado y distinto del origen y destino principal. |
-| 93–106 | Prepara el log y un candado exclusivo para impedir dos respaldos simultáneos. cleanup() borra temporales y libera el candado; trap asegura limpieza al salir, también cuando hay error. |
-| 108–126 | Si se solicita incremental sin estado previo, empieza con un respaldo completo. Prepara nombres temporales y usa tar con gzip y el inventario incremental. |
-| 127–151 | Calcula el hash, publica el archivo al moverlo a su nombre final, crea el sidecar .sha256 y actualiza el estado. Si hay copia secundaria, copia archivo/hash, compara huellas y registra el resultado. |
+Di: “La carpeta configs explica ACL y cuotas. cron contiene un ejemplo de horario. docs reúne el reporte y la evidencia de las pruebas. tests contiene una prueba que usa carpetas temporales. Esta separación permite encontrar cada parte sin mezclarla con los proyectos 3.1 y 3.3.”
 
-Narra: “El hash es una huella del archivo. Compararla permite detectar cambios o corrupción. Para restaurar una cadena incremental se necesita primero la copia completa y después cada incremental, en orden”.
+## Escena 2 — explica las primeras líneas de backup.sh
 
-### Escena 3 — Mostrar ayuda y probar el respaldo
+Abre backup.sh. Selecciona las líneas 1–5 y di:
 
-En la terminal, desde Tarea_3.2, enseña la ayuda; no crea un respaldo:
+Di: “La primera línea pide ejecutar este archivo con Bash. La línea 3 activa opciones estrictas: el script se detiene si ocurre un error, si se usa una variable vacía o si falla una parte de una tubería. IFS organiza cómo se separan algunos valores y umask restringe los permisos de los archivos nuevos para que el respaldo no quede abierto para todas las cuentas.”
 
-    bash backup.sh --help
+Selecciona las líneas 7–20 y di:
 
-Explica que un destino secundario debe existir y estar montado antes de usarlo y que las rutas de ejemplo se cambian por carpetas descartables de la VM. Después ejecuta la prueba automática:
+Di: “La función usage muestra cómo se usa el programa. Aquí aparecen las opciones para respaldar y para restaurar. También se aclara que una copia incremental depende de una completa anterior y que el destino secundario debe estar montado antes. Las funciones fail, log y need_value centralizan los errores, el registro con fecha y la comprobación de que cada opción reciba un valor.”
 
-    bash tests/test-backup.sh
+Selecciona las líneas 22–44 y di:
 
-Deja visible toda la salida. Explica que la prueba usa archivos temporales, rechaza destinos inválidos, compara hashes, detecta corrupción y restaura una cadena completa más incremental. PASS significa que pasó esa prueba aislada; no demuestra que se haya probado un servidor secundario real. No apuntes la prueba a datos personales.
+Di: “Estas variables empiezan vacías o con un valor seguro por defecto. Después, el ciclo recorre cada argumento de la terminal: source elige los datos de origen, destination el destino principal, state guarda el estado incremental y mode elige entre full e incremental. Las opciones de restore y target seleccionan el archivo y la carpeta donde se recuperará. Si el usuario escribe una opción desconocida o deja un valor vacío, el script informa el error.”
 
-### Escena 4 — Explicar cuotas y ACL
+## Escena 3 — explica restauración y protecciones
 
-Abre configs/posix-acl-cuotas.md. Es una receta para leer y adaptar, no un programa que se ejecuta entero a ciegas.
+Selecciona las líneas 46–70 y di:
 
-| Líneas | Qué explicar |
-|---|---|
-| 1, 5, 18, 35, 44 | Títulos y separadores de permisos, cuotas Linux, verificación y alternativa Windows. |
-| 3, 16, 33, 42, 46 | Advertencias: VM/disco desechable, herencia, unidades y revisar el impacto antes de aplicar cambios. |
-| 7, 9–14 | Explica modo 3770: SGID hereda el grupo y sticky limita quién borra archivos. groupadd crea grupo; install -d crea carpeta; setfacl define ACL y reglas por defecto; getfacl/stat verifican. |
-| 20–23 | Selecciona un volumen de laboratorio y guarda copia de la configuración antes de editar opciones. Nunca cambies el volumen anfitrión. |
-| 25–31 | Remonta, prepara/activa cuotas, establece límites de usuario y grupo y consulta el consumo. Cuota blanda admite periodo de gracia; cuota dura impide exceder el límite. |
-| 37–40 | Comprueba sistema de archivos, opciones y reportes. Si las cuotas no están habilitadas, informa el resultado real; no inventes una salida exitosa. |
-| 42–46 | Presenta FSRM/NTFS como alternativa Windows; no mezcles esos comandos con Ubuntu. |
+Di: “Este bloque se ejecuta cuando pedimos restaurar. Exige la confirmación --force, comprueba que existan el archivo y su suma SHA-256 y compara ambas sumas antes de extraer. También inspecciona los nombres dentro del archivo y rechaza rutas que intenten salir de la carpeta de destino. Al final extrae sin restaurar propietario ni permisos del equipo que creó el archivo y registra el resultado. Por eso la restauración del ejemplo apunta a una carpeta temporal vacía.”
 
-Di que no activarás cuotas sobre la partición raíz de una instalación real. Para mostrar ACL, lee la receta o aplícala solo dentro de un volumen desechable de la VM.
+Selecciona las líneas 73–106 y di:
 
-### Escena 5 — Revisar verificadores y cuota Windows
+Di: “Antes de crear una copia, el script comprueba que el origen exista, que el modo sea válido y que el destino no esté dentro del origen. También valida que el destino secundario no sea el origen ni esté dentro del destino principal. Crea un bloqueo para evitar dos respaldos simultáneos y registra una limpieza para retirar los archivos temporales si el proceso termina.”
 
-| Archivo y líneas | Qué explicar |
-|---|---|
-| configs/verificar-cuotas.sh, 1–3 | Selecciona Bash y activa errores estrictos; el script consulta, no configura. |
-| 4–9 | Exige un punto de montaje y verifica herramientas de consulta. |
-| 10–18 | findmnt identifica el volumen; el ejemplo espera ext4 y opciones de cuotas. |
-| 19–21 | quotaon -p y repquota -ug consultan estado y uso; no crean cuotas. |
-| configs/verificar-cuotas.ps1, 1–8 | Requiere PowerShell, recibe volumen y rutas y detiene el informe ante errores. |
-| 9–17 | Consulta el volumen y busca cada cuota FSRM; muestra SIN CUOTA si falta y sigue con la ruta siguiente. |
-| 18–26 | Presenta uso, límite y porcentaje y consulta cuotas NTFS. Es Windows, no Ubuntu. |
-| configs/fsrm-cuotas.ps1, 1–13 | Declara requisitos, parámetros, rutas y límites de ejemplo. -Apply es el interruptor para solicitar cambios reales. |
-| 15–22 | Sin -Apply imprime la vista previa y sale; luego verifica que exista el cmdlet FSRM. |
-| 23–34 | Comprueba que las carpetas existan y que no tengan ya cuota. ShouldProcess protege la creación y permite confirmar cada cambio. |
+Selecciona las líneas 108–134 y di:
 
-### Escena 6 — Cron y alternativa Windows
+Di: “Aquí se prepara el archivo. Si se pide incremental sin que exista un estado previo, la primera ejecución se convierte en completa y lo deja escrito en el log. GNU tar crea el archivo comprimido usando el estado incremental. Luego se calcula SHA-256, se guarda la suma junto al archivo y se actualiza el estado para la siguiente ejecución.”
 
-Abre cron/backup-tarea32.cron. Explica que programa un respaldo completo semanal el domingo a las 02:00 y respaldos incrementales de lunes a sábado a la misma hora. Repite: “Es una plantilla; no está instalada”. Antes de programarla habría que cambiar rutas, verificar el destino montado y elegir una cuenta con permisos adecuados.
+Selecciona las líneas 136–151 y di:
 
-Abre windows/tarea-programada.md y recorre sus 21 líneas: título, rutas de ejemplo, comando semanal, variante incremental y pasos en la interfaz del Programador de tareas. Esa alternativa ejecuta backup.ps1; no forma parte del Ubuntu.
+Di: “Esta parte es opcional. Si se indicó un segundo destino que ya existe y está montado, copia el archivo y su suma; después calcula otra vez la suma y compara los valores. El script no monta discos ni conecta por sí mismo a un NAS. Si falla la copia secundaria, deja constancia del error y termina con fallo.”
 
-### Escena 7 — Explicar los archivos restantes
+## Escena 4 — prepara datos de prueba en una carpeta temporal
 
-Explica backup.ps1 como alternativa Windows, siguiendo sus bloques actuales: 1–20 requisitos y parámetros; 22–57 manejo de errores, log, rutas seguras e inventario/hash; 59–128 validación y restauración ZIP; 130–178 validación de rutas, secundario, candado y temporales; 179–246 cambios, ZIP, manifiesto y estado; 248–270 copia secundaria y limpieza. Repite que no se ejecuta en Ubuntu.
+Vuelve a la terminal. Explica que todos los archivos de esta demostración se crean en una carpeta temporal dentro de tu usuario Ubuntu. Escribe cada bloque despacio:
 
-Muestra tests/test-backup.sh (líneas 1–90) y tests/test-backup.ps1 (líneas 1–88). La primera prueba rutas, destino secundario, checksum, copia completa/incremental y restauración. La segunda repite esas comprobaciones con PowerShell y limpia el temporal en finally. Son pruebas automáticas; no programan cron ni configuran cuotas.
+~~~bash
+DEMO=$(mktemp -d "$HOME/tarea32.XXXXXX")
+mkdir -p "$DEMO/origen" "$DEMO/copias" "$DEMO/secundario"
+printf 'version 1\n' > "$DEMO/origen/nota.txt"
+printf 'este archivo se borrara en la prueba\n' > "$DEMO/origen/borrar.txt"
+printf 'Carpeta temporal: %s\n' "$DEMO"
+~~~
 
-### Escena 8 — Evidencia y cierre
+Di: “La variable DEMO guarda una ruta nueva y temporal. Estoy creando dos archivos de texto ficticios, un destino principal y un destino secundario local de prueba. No estoy usando documentos personales ni un disco del anfitrión.”
 
-Si preparaste una carpeta desechable y un segundo destino temporal dentro de la VM, explica el comando de respaldo usando esas rutas reales. Para evidenciar recuperación, crea un archivo de práctica, respáldalo, elimina únicamente esa copia desechable, restaura en otra carpeta y abre el archivo recuperado. Muestra el log y compara los hashes. No borres archivos personales.
+## Escena 5 — ejecuta la copia completa y revisa su integridad
 
-Cierra diciendo: “Esta actividad separa la receta de permisos, la consulta de cuotas y la automatización de respaldos. Las pruebas trabajan con datos temporales. Una configuración real de cuotas o cron solo se aplica dentro de una VM preparada, con sus rutas de laboratorio verificadas”. Mantén la cámara visible hasta terminar.
+Escribe:
 
-## Lista rápida antes de entregar
+~~~bash
+bash backup.sh --source "$DEMO/origen" --destination "$DEMO/copias" --state "$DEMO/estado.snar" --mode full --secondary "$DEMO/secundario"
+~~~
 
-- [ ] La pantalla se ve y la cámara permanece abajo a la derecha.
-- [ ] Se explicó por qué existe cada carpeta y qué contiene.
-- [ ] Se recorrieron de arriba abajo los scripts, pruebas y plantillas, explicando cada línea visible.
-- [ ] Se mostró la ayuda y la prueba automática con su resultado real.
-- [ ] Se distinguieron Ubuntu/Linux, Windows, ejemplos y cambios reales.
-- [ ] La restauración, si se grabó, usa solo archivos desechables de la VM.
-- [ ] No se afirma que cron, cuotas o un secundario estén configurados sin haberlo observado.
+Espera a que termine. Señala la línea que dice “Respaldo full creado y verificado”. Di:
+
+Di: “Esta es una copia completa: incluye el contenido actual del origen. El registro indica que se creó y verificó. El destino secundario de esta práctica es otra carpeta temporal; representa el paso de copia, pero no es un segundo disco ni un servidor NAS.”
+
+Ahora ejecuta la verificación del archivo y la comparación de la copia secundaria:
+
+~~~bash
+FULL=$(printf '%s\n' "$DEMO"/copias/*_full.tar.gz)
+(cd "$DEMO/copias" && sha256sum -c "$(basename "$FULL").sha256")
+cmp "$FULL" "$DEMO/secundario/$(basename "$FULL")" && printf 'Copia secundaria identica: si\n'
+tail -n 5 "$DEMO/copias/backup.log"
+~~~
+
+Di: “sha256sum -c confirma que el archivo coincide con la suma guardada. cmp no imprime diferencias cuando los dos archivos son iguales; por eso aparece el mensaje de copia idéntica. Las últimas líneas del log conservan la evidencia de la operación.”
+
+## Escena 6 — cambia datos y genera una incremental
+
+Escribe:
+
+~~~bash
+printf 'version 2\n' > "$DEMO/origen/nota.txt"
+rm -- "$DEMO/origen/borrar.txt"
+printf 'archivo agregado despues\n' > "$DEMO/origen/nuevo.txt"
+bash backup.sh --source "$DEMO/origen" --destination "$DEMO/copias" --state "$DEMO/estado.snar" --mode incremental --secondary "$DEMO/secundario"
+~~~
+
+Di: “Modifiqué una nota, eliminé el archivo de prueba y agregué otro. Ahora el modo incremental registra los cambios desde la copia anterior y conserva la relación con el archivo de estado. En una política real, las incrementales se restauran después de su copia completa y en orden.”
+
+## Escena 7 — recupera y demuestra el resultado
+
+Escribe estos comandos en este orden:
+
+~~~bash
+INCR=$(printf '%s\n' "$DEMO"/copias/*_incremental.tar.gz)
+bash backup.sh --restore "$FULL" --target "$DEMO/restaurado" --force
+bash backup.sh --restore "$INCR" --target "$DEMO/restaurado" --force
+IFS= read -r CONTENIDO < "$DEMO/restaurado/nota.txt"
+printf 'Nota recuperada: %s\n' "$CONTENIDO"
+test -f "$DEMO/restaurado/nuevo.txt" && printf 'Archivo nuevo recuperado: si\n'
+test ! -e "$DEMO/restaurado/borrar.txt" && printf 'El borrado tambien se refleja: si\n'
+tail -n 5 "$DEMO/copias/restore.log"
+~~~
+
+Di: “Primero restauro la copia completa y después la incremental, ambas en una carpeta nueva. La nota recuperada muestra la versión 2; el archivo nuevo está presente y el archivo que eliminé ya no aparece. Esta prueba demuestra la restauración de estos datos temporales, no de un servidor productivo.”
+
+## Escena 8 — ejecuta las pruebas automáticas
+
+En la terminal escribe:
+
+~~~bash
+bash tests/test-backup.sh
+~~~
+
+Deja la salida completa visible. Di:
+
+Di: “Esta prueba automatizada crea sus propios archivos temporales y verifica la copia completa, la incremental, la suma, la restauración y algunos rechazos de rutas inseguras. Si todas las comprobaciones terminan con PASS, el script se comporta como se espera en estos casos aislados. La prueba limpia su propia carpeta temporal al terminar.”
+
+## Escena 9 — muestra permisos, ACL y cuotas sin cambiar el volumen
+
+Abre configs/posix-acl-cuotas.md. Selecciona las líneas 5–16 y di:
+
+Di: “Esta sección propone una carpeta compartida con SGID y sticky bit. SGID ayuda a que los archivos nuevos conserven el grupo del directorio; sticky limita quién puede borrar archivos de otros. Las líneas setfacl agregan una ACL y una ACL predeterminada para la herencia. En esta grabación las presento como instrucciones del proyecto y no las aplico a un volumen real.”
+
+Selecciona las líneas 18–42 y di:
+
+Di: “Aquí se explica el procedimiento de cuotas en ext4: identificar el volumen correcto, habilitar usrquota y grpquota, crear los índices, activar cuotas y definir límites. Los números son ejemplos, no límites ya instalados. No voy a cambiar /etc/fstab ni ejecutar setquota sobre el disco anfitrión. Para que esta parte cuente como validación real, se necesita una partición virtual desechable, cuotas habilitadas y capturas de quota y repquota después de probar con archivos de práctica.”
+
+Si quieres mostrar solo el bit POSIX en un directorio temporal, escribe:
+
+~~~bash
+mkdir -p "$DEMO/compartido"
+chmod 3770 "$DEMO/compartido"
+stat -c '%A %a %U:%G %n' "$DEMO/compartido"
+~~~
+
+Di: “El modo numérico 3770 combina sticky bit y SGID con acceso de lectura, escritura y ejecución para propietario y grupo. Esta comprobación se limita a una carpeta temporal; no demuestra por sí sola la herencia de ACL ni una cuota de disco.”
+
+## Escena 10 — explica la política y el cron de ejemplo
+
+Abre cron/backup-tarea32.cron y selecciona las líneas 1–6. Di:
+
+Di: “Este archivo propone una copia completa el domingo a las dos de la mañana y una incremental de lunes a sábado a la misma hora. Es un ejemplo, no un cron activo. Las rutas deben ajustarse y el destino secundario debe estar montado antes de programarlo. No voy a copiarlo a /etc/cron.d durante esta demostración.”
+
+Abre docs/reporte-tecnico.md y selecciona la parte de la política. Di:
+
+Di: “El RPO de 24 horas y el RTO de 4 horas son objetivos propuestos. El RPO describe cuántos cambios se podrían perder según la frecuencia del respaldo; el RTO es el tiempo objetivo para volver a disponer de los datos. En esta práctica no medimos el tiempo de recuperación de un servidor real.”
+
+## Cierre — resume con precisión
+
+Di: “En esta grabación ejecuté en Ubuntu el script Bash con archivos temporales: creé una copia completa, una incremental, verifiqué SHA-256, comparé la copia secundaria y recuperé los archivos. También recorrí las plantillas de ACL, cuotas y cron. No afirmo que las cuotas estén activas, que cron esté instalado ni que se haya probado el RTO o el RPO en un servidor real. Para entregar evidencia de esas partes, debo completarlas y capturarlas en una VM con un volumen de laboratorio.”
+
+Antes de terminar, muestra en pantalla las carpetas tests, configs y cron y la salida final de restauración. No publiques contraseñas, documentos personales ni rutas que contengan datos privados.
